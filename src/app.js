@@ -38,7 +38,7 @@ app.get(BASE_PATH, (req, res) =>
 app.all("*", (req, res, next) => {
   const err = new createError(
     404,
-    `Cant find the ${req.originalUrl} on the vehicle service server !`
+    `Cant find the ${req.originalUrl} on the OXIUM server !`
   );
   next(err);
 });
