@@ -5,6 +5,8 @@ const logger = require("morgan");
 const cookieParser = require("cookie-parser");
 const volleyball = require("volleyball");
 const errorHandler = require("./middlewares/errorMiddleware.js");
+const vehicleRoute = require("./routes/vehicle/vehicleRoutes.js");
+const authVerify = require("./middlewares/authVerify.js");
 const app = express();
 
 app.use(
@@ -33,6 +35,8 @@ const BASE_PATH = `/api/${API_VERSION}`;
 app.get(BASE_PATH, (req, res) =>
   res.status(200).send(" All endpoints are 🔐. Do you have the 🔑")
 );
+
+app.use(`${BASE_PATH}`, authVerify, vehicleRoute);
 
 // 404
 app.all("*", (req, res, next) => {
