@@ -9,4 +9,12 @@ const vehicleValidationSchema = Joi.object({
   compactable_port: Joi.array(),
 });
 
-module.exports = { vehicleValidationSchema };
+const reviewEditSchema = Joi.object({
+  // user: Joi.string(),
+  chargingStation: Joi.string(),
+  evMachine: Joi.string(),
+  rating: Joi.number().min(0).max(5),
+  comment: Joi.string(),
+});
+
+module.exports = { vehicleValidationSchema, reviewEditSchema };
