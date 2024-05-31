@@ -2,7 +2,7 @@ const Brand = require("../../models/brandSchema");
 const Vehicle = require("../../models/vehicleSchema");
 const {
   vehicleValidationSchema,
-} = require("../../validation/vehicleValidationSchema");
+} = require("../../validation");
 
 const AWS = require("aws-sdk");
 const { getVehiclePipeline } = require("./pipes");
