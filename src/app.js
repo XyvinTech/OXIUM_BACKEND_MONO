@@ -7,6 +7,7 @@ const volleyball = require("volleyball");
 const errorHandler = require("./middlewares/errorMiddleware.js");
 const vehicleRoute = require("./routes/vehicle/vehicleRoutes.js");
 const authVerify = require("./middlewares/authVerify.js");
+const brandRouter = require("./routes/vehicle/brandRoutes.js");
 const app = express();
 
 app.use(
@@ -37,6 +38,7 @@ app.get(BASE_PATH, (req, res) =>
 );
 
 app.use(`${BASE_PATH}`, authVerify, vehicleRoute);
+app.use(`${BASE_PATH}`, authVerify, brandRouter);
 
 // 404
 app.all("*", (req, res, next) => {
