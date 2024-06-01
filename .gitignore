@@ -39,3 +39,4 @@ yarn-error.log
 .serverless
 
 run.sh
+firebase.config.js
