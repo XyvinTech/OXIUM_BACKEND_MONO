@@ -15,6 +15,7 @@ const notificationRoute = require("./routes/notification/notificationRoutes.js")
 const csRoute = require("./routes/chargingStation/chargingStationRoutes.js");
 const evRoute = require("./routes/evMachine/evMachineRoutes.js");
 const paymentRoute = require("./routes/payment/paymentRoutes.js");
+const configRoute = require("./routes/configuration/configurationRoutes.js");
 const app = express();
 
 app.use(
@@ -53,6 +54,8 @@ app.use(`${BASE_PATH}`, authVerify, notificationRoute);
 app.use(`${BASE_PATH}`, authVerify, csRoute);
 app.use(`${BASE_PATH}`, authVerify, evRoute);
 app.use(`${BASE_PATH}`, authVerify, paymentRoute);
+app.use(`${BASE_PATH}`, authVerify, configRoute);
+
 
 // 404
 app.all("*", (req, res, next) => {
