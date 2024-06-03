@@ -17,6 +17,7 @@ const evRoute = require("./routes/evMachine/evMachineRoutes.js");
 const paymentRoute = require("./routes/payment/paymentRoutes.js");
 const configRoute = require("./routes/configuration/configurationRoutes.js");
 const logRoute = require("./routes/logs/logRoutes.js");
+const adminRoute = require("./routes/user/adminRoutes.js");
 const app = express();
 
 app.use(
@@ -57,8 +58,7 @@ app.use(`${BASE_PATH}`, authVerify, evRoute);
 app.use(`${BASE_PATH}`, authVerify, paymentRoute);
 app.use(`${BASE_PATH}`, authVerify, configRoute);
 app.use(`${BASE_PATH}`, authVerify, logRoute);
-
-
+app.use(`${BASE_PATH}`, adminRoute);
 
 // 404
 app.all("*", (req, res, next) => {
