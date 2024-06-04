@@ -13,7 +13,8 @@ const authVerify = (req, res, next) => {
     if (err) {
       return res.status(403).json({ message: 'Failed to authenticate token' })
     }
-    console.log("Auth success...!");
+    req.roleId = decoded.role._id;
+    req.userId = decoded.userId._id;
     return next();
   })
 }
