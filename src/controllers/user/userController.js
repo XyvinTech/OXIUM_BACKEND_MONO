@@ -1,5 +1,9 @@
 const createError = require("http-errors");
 const USER = require("../../models/userSchema");
+const {
+  createWalletTransaction,
+} = require("../transaction/transactionController");
+const { getConfigByName } = require("../configuration/configurationController");
 
 // Get charging tariff by ID
 exports.getChargingTariffByRfid = async (req, res) => {
@@ -104,11 +108,8 @@ exports.addToWallet = async (req, res) => {
 
 // deduct money from wallet
 exports.deductFromWallet = async (req, res) => {
-  //TODO: need to change this code
-  const minimumWalletRequirement = await getConfigValue(
-    "minimum-wallet-requirement"
-  );
-
+  req.params.name = "minimum-transaction-wallet-requirement";
+  const minimumWalletRequirement = await getConfigByName(req, res, true);
   if (!req.body.amount)
     throw new createError(404, `amount is a required field`);
   else if (isNaN(req.body.amount) || req.body.amount <= 0)
@@ -138,8 +139,17 @@ exports.deductFromWallet = async (req, res) => {
   });
 
   if (doneByAdmin && updatedUser) {
-    //TODO: need to change this code
-    updateWalletTransaction(user, amount, reference, "admin deduction");
+    const payload = {
+      user: user,
+      amount: amount,
+      type: type,
+      status: "success",
+      reference: reference,
+      initiated_by: "admin",
+      userWalletUpdated: "admin deduction",
+    };
+    req.body = payload;
+    await createWalletTransaction(req, res, true);
   }
 
   res.status(200).json({

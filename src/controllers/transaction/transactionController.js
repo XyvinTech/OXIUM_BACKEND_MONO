@@ -7,7 +7,7 @@ const {
   getReportPipeline,
 } = require("./pipes");
 
-exports.createWalletTransaction = async (req, res) => {
+exports.createWalletTransaction = async (req, res, internalCall = false) => {
   let body = req.body;
   if (!body.user)
     throw new createError(400, "Required user for creating wallet transaction");
@@ -15,6 +15,7 @@ exports.createWalletTransaction = async (req, res) => {
 
   const walletTransaction = new WalletTransaction(req.body);
   const savedTransaction = await walletTransaction.save();
+  if (internalCall) return savedTransaction;
   res.status(201).json(savedTransaction);
 };
 

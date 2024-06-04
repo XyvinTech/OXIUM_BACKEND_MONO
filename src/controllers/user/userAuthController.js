@@ -51,7 +51,7 @@ exports.sendOtp = async (req, res) => {
     otp: otp,
   };
   req.body = payload;
-  sendSms(req, res, true);
+  await sendSms(req, res, true);
   res.status(200).json({
     status: true,
     message: "Otp send successfully",
