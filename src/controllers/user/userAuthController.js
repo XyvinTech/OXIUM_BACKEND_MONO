@@ -4,6 +4,8 @@ const { signAccessToken } = require("../../utils/jwt_helper");
 const {
   generateUniqueAlphanumericString,
 } = require("../../utils/generateUniqueUserId");
+const { sendSms } = require("../notification/smsController");
+const { generateOTP } = require("../../utils/generateOTP");
 
 // sendOtp
 exports.sendOtp = async (req, res) => {
@@ -42,9 +44,12 @@ exports.sendOtp = async (req, res) => {
       }
     );
   }
-  //TODO: need to change this code
-  await sendOTPBySMS(mobileNo, otp);
-
+  const payload = {
+    phoneNumber: mobileNo,
+    otp: otp,
+  };
+  req.body = payload;
+  sendSms(req, res, true);
   res.status(200).json({
     status: true,
     message: "Otp send successfully",

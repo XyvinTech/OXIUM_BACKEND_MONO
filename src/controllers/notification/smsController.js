@@ -2,7 +2,7 @@ const smsClient = require("../../helpers/smsClient.js");
 const { sendTwilioOTP } = require("../../helpers/twilioClient.js");
 
 // send sms notification
-exports.sendSms = async (req, res) => {
+exports.sendSms = async (req, res, internalCall = false) => {
   let { phoneNumber, otp } = req.body;
   const countryCode = "+91"; // Country code for India
   let result;
@@ -16,6 +16,6 @@ exports.sendSms = async (req, res) => {
   } else {
     result = await sendTwilioOTP(phoneNumber, otp);
   }
-  console.log(phoneNumber, otp);
+  if (internalCall) return;
   res.status(200).json({ status: true, message: "OTP sent successfully" });
 };
