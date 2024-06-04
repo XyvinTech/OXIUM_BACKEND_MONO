@@ -3,6 +3,7 @@ require("dotenv").config();
 const USER = require("../../models/userSchema");
 const AWS = require("aws-sdk");
 const { getUserByMobilePipeline } = require("./pipes");
+const { getVehicleById } = require("../vehicle/vehicleController");
 
 AWS.config.update({
   region: process.env.AWS_REGION,
@@ -122,59 +123,44 @@ exports.updateUserByMobileNo = async (req, res) => {
 };
 
 exports.getUserByMobileNo = async (req, res) => {
-  //TODO: need to change this code
-  const vehicleServiceUrl = process.env.VEHICLE_SERVICE_URL;
-  if (!vehicleServiceUrl)
-    return res
-      .status(400)
-      .json({ status: false, message: "VEHICLE_SERVICE_URL not set in env" });
+  try {
+    const user = await USER.findOne({ mobile: req.params.mobileNo });
+    if (!user)
+      return res.status(400).json({ status: false, message: "User not found" });
 
-  const user = await USER.findOne({ mobile: req.params.mobileNo });
-  if (!user)
-    return res.status(400).json({ status: false, message: "User not found" });
+    const defaultVehicle = user.vehicle.find(
+      (vehicle) => vehicle.evRegNumber === user.defaultVehicle
+    );
+    const userData = user.toObject();
 
-  const defaultVehicle = user.vehicle.find(
-    (vehicle) => vehicle.evRegNumber === user.defaultVehicle
-  );
-  const userData = user.toObject();
+    userData.name = userData.username;
+    userData.username = userData.mobile;
+    userData.email = userData.email || "";
 
-  userData.name = userData.username;
-  userData.username = userData.mobile;
-  userData.email = userData.email || "";
+    const pipelineData = getUserByMobilePipeline(req.params.mobileNo);
+    const pipeline = await USER.aggregate(pipelineData);
 
-  const pipelineData = getUserByMobilePipeline(mobileNo);
+    userData.rfidTag =
+      pipeline[0]?.rfidDetails?.map((data) => data.serialNumber) || [];
 
-  let pipeline = await USER.aggregate(pipelineData);
-
-  userData.rfidTag = pipeline[0].rfidDetails
-    ? pipeline[0].rfidDetails.map((data) => data.serialNumber)
-    : [];
-  if (defaultVehicle) {
-    let apiResponse, vehicleResult;
-    try {
-      //TODO: need to change this code
-      apiResponse = await axios.get(
-        `${vehicleServiceUrl}/api/v1/vehicle/${defaultVehicle.vehicleRef}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      vehicleResult = apiResponse.data.result;
-    } catch (error) {
-      axiosErrorHandler(error);
+    if (defaultVehicle) {
+      req.params.id = defaultVehicle.vehicleRef;
+      const apiResponse = await getVehicleById(req, res, true);
+      const vehicleResult = apiResponse.result;
+      userData.defaultVehicle = {
+        ...defaultVehicle.toObject(),
+        brand: vehicleResult ? vehicleResult.brand : "",
+        icon: vehicleResult ? vehicleResult.icon : "",
+        modelName: vehicleResult ? vehicleResult.modelName : "",
+      };
+    } else {
+      userData.defaultVehicle = null;
     }
 
-    userData.defaultVehicle = {
-      ...defaultVehicle.toObject(),
-      brand: vehicleResult ? vehicleResult.brand : "",
-      icon: vehicleResult ? vehicleResult.icon : "",
-      modelName: vehicleResult ? vehicleResult.modelName : "",
-    };
-  } else userData.defaultVehicle = null;
-
-  res.status(200).json({ status: true, message: "Ok", result: userData });
+    res.status(200).json({ status: true, message: "Ok", result: userData });
+  } catch (error) {
+    res.status(500).json({ status: false, message: error.message });
+  }
 };
 
 // Delete a user by ID

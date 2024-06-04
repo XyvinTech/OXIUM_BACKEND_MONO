@@ -1,8 +1,7 @@
+const mongoose = require("mongoose");
 const Brand = require("../../models/brandSchema");
 const Vehicle = require("../../models/vehicleSchema");
-const {
-  vehicleValidationSchema,
-} = require("../../validation");
+const { vehicleValidationSchema } = require("../../validation");
 
 const AWS = require("aws-sdk");
 const { getVehiclePipeline } = require("./pipes");
@@ -144,7 +143,7 @@ const getAllVehiclesForDashboard = async (req, res) => {
 };
 
 // Get a Vehicle by ID
-const getVehicleById = async (req, res) => {
+const getVehicleById = async (req, res, internalCall = false) => {
   const { id } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(id))
@@ -159,6 +158,7 @@ const getVehicleById = async (req, res) => {
     brand: brand ? brand.brandName : "",
   };
 
+  if (internalCall) return result;
   res.status(200).json({
     status: true,
     result: result,
