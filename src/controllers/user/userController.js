@@ -4,31 +4,22 @@ const {
   createWalletTransaction,
 } = require("../transaction/transactionController");
 const { getConfigByName } = require("../configuration/configurationController");
+const {
+  getChargingTariffById,
+} = require("../configuration/chargingTariffController");
+const { getRfidBySerialNumber } = require("../rfid/rfidController");
 
 // Get charging tariff by ID
 exports.getChargingTariffByRfid = async (req, res) => {
   const idOrRfid = req.params.rfId;
   let chargingTariffApiResult = {};
-  //TODO: need to change this code
-  const configurationServiceUrl = process.env.CONFIG_SERVICE_URL;
-  if (!configurationServiceUrl)
-    return res
-      .status(400)
-      .json({ status: false, message: "CONFIG_SERVICE_URL not set in env" });
-
   if (idOrRfid.length == 10) {
     const user = await USER.findOne({ userId: idOrRfid }, "chargingTariff");
 
     if (user.chargingTariff) {
-      let apiResponse = await axios.get(
-        `${configurationServiceUrl}/api/v1/chargingTariff/${user.chargingTariff}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      chargingTariffApiResult = apiResponse.data.result;
+      req.params.id = user.chargingTariff;
+      let apiResponse = await getChargingTariffById(req, res, true);
+      chargingTariffApiResult = apiResponse;
     }
 
     res.status(200).json({
@@ -41,8 +32,8 @@ exports.getChargingTariffByRfid = async (req, res) => {
       },
     });
   } else {
-    //TODO: need to change this code
-    let rfidMongoId = await getRFIDMongoId(idOrRfid);
+    req.params.rfidSerialNumber = idOrRfid;
+    let rfidMongoId = await getRfidBySerialNumber(req, res, true);
     if (!rfidMongoId) throw new createError(400, "No Mongo Id");
 
     let rfidId = rfidMongoId._id;
@@ -50,17 +41,8 @@ exports.getChargingTariffByRfid = async (req, res) => {
     if (!user) throw new createError(400, "rfid not found");
 
     if (user.chargingTariff) {
-      //TODO: need to change this code
-
-      let apiResponse = await axios.get(
-        `${configurationServiceUrl}/api/v1/chargingTariff/${user.chargingTariff}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      chargingTariffApiResult = apiResponse.data.result;
+      let apiResponse = await getChargingTariffById(req, res, true);
+      chargingTariffApiResult = apiResponse;
     }
 
     res.status(200).json({

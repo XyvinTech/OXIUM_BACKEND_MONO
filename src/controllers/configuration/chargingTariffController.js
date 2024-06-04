@@ -131,7 +131,7 @@ exports.getChargingTariffListDropdown = async (req, res) => {
 };
 
 // get chargingTariff by id
-exports.getChargingTariffById = async (req, res) => {
+exports.getChargingTariffById = async (req, res, internalCall = false) => {
   const id = req.params.id;
 
   const chargingTariff = await ChargingTariff.findOne(
@@ -148,9 +148,12 @@ exports.getChargingTariffById = async (req, res) => {
   let total = chargingTariff.serviceAmount + chargingTariff.value;
   total += total * taxPercentage;
 
+  const result = { tax: taxPercentage, total: Number(total.toFixed(2)) };
+  if (internalCall) return result;
+
   res.status(200).json({
     status: true,
-    result: { tax: taxPercentage, total: Number(total.toFixed(2)) },
+    result,
   });
 };
 
