@@ -22,12 +22,16 @@ exports.getConfigList = async (req, res) => {
   res.status(200).json({ status: true, result: allConfigs, message: "Ok" });
 };
 
-exports.getConfigByName = async (req, res) => {
+exports.getConfigByName = async (req, res, internalCall = false) => {
   const name = req.params.name;
 
   const config = await Config.findOne({ name });
 
-  if (config)
-    res.status(200).json({ status: true, result: config.value, message: "Ok" });
-  else res.status(404).json({ status: false, message: "Config not found" });
+  if (config) {
+    const result = config.value
+    if (internalCall) return result;
+    res.status(200).json({ status: true, result, message: "Ok" });
+  } else {
+    res.status(404).json({ status: false, message: "Config not found" });
+  }
 };

@@ -6,6 +6,7 @@ const {
 } = require("../../utils/generateUniqueUserId");
 const { sendSms } = require("../notification/smsController");
 const { generateOTP } = require("../../utils/generateOTP");
+const { getConfigByName } = require("../configuration/configurationController");
 
 // sendOtp
 exports.sendOtp = async (req, res) => {
@@ -132,10 +133,8 @@ exports.rfidAuthenticate = async (req, res) => {
 };
 
 exports.userAuthenticate = async (req, res) => {
-  //TODO: need to change this code
-  const minimumWalletRequirement = await getConfigValue(
-    "minimum-transaction-wallet-requirement"
-  );
+  req.params.name = "minimum-transaction-wallet-requirement"
+  const minimumWalletRequirement = await getConfigByName(req, res, true);
   if (!req.params.userid)
     throw new createError(400, "user is a required field");
 
