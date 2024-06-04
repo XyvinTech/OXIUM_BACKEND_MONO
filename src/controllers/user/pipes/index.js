@@ -259,6 +259,18 @@ const getRfidDetailsPipeline = (id, pageNo) => [
   { $limit: 10 },
 ];
 
+const getUserByMobilePipeline = (mobileNo) => [
+  { $match: { mobile: mobileNo } },
+  {
+    $lookup: {
+      from: "rfidtags",
+      localField: "rfidTag",
+      foreignField: "_id",
+      as: "rfidDetails",
+    },
+  },
+];
+
 module.exports = {
   getUserListPipeline,
   getUserDataByIdPipeline,
@@ -267,4 +279,5 @@ module.exports = {
   getChargingTariffPipeline,
   getVehicleDetailsPipeline,
   getRfidDetailsPipeline,
+  getUserByMobilePipeline,
 };
