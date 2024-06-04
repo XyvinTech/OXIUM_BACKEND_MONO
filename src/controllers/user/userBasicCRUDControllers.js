@@ -54,13 +54,6 @@ exports.updateUser = async (req, res) => {
 };
 
 exports.updateUserByMobileNo = async (req, res) => {
-  //TODO: need to change this code
-  const vehicleServiceUrl = process.env.VEHICLE_SERVICE_URL;
-  if (!vehicleServiceUrl)
-    return res
-      .status(400)
-      .json({ status: false, message: "VEHICLE_SERVICE_URL not set in env" });
-
   let updatedUser = await USER.findOneAndUpdate(
     { mobile: req.params.mobileNo },
     { $set: req.body },
@@ -78,34 +71,17 @@ exports.updateUserByMobileNo = async (req, res) => {
   userData.username = userData.mobile;
   userData.email = userData.email || "";
 
-  const pipelineData = getUserByMobilePipeline(mobileNo);
+  const pipelineData = getUserByMobilePipeline(req.params.mobileNo);
 
   let pipeline = await USER.aggregate(pipelineData);
 
   userData.rfidTag = pipeline[0]?.rfidDetails
     ? pipeline[0].rfidDetails.map((data) => data?.serialNumber)
     : [];
-  console.log(
-    "🚀 ~ exports.updateUserByMobileNo= ~ defaultVehicle:",
-    defaultVehicle
-  );
-
   if (defaultVehicle) {
-    let apiResponse, vehicleResult;
-    try {
-      //TODO: need to change this code
-      apiResponse = await axios.get(
-        `${vehicleServiceUrl}/api/v1/vehicle/${defaultVehicle.vehicleRef}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      vehicleResult = apiResponse.data.result;
-    } catch (error) {
-      axiosErrorHandler(error);
-    }
+    req.params.id = defaultVehicle.vehicleRef;
+    const apiResponse = await getVehicleById(req, res, true);
+    const vehicleResult = apiResponse.result;
 
     userData.defaultVehicle = {
       ...defaultVehicle.toObject(),
