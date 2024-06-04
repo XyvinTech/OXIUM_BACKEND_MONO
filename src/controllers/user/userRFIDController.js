@@ -1,39 +1,23 @@
 const createError = require("http-errors");
 const USER = require("../../models/userSchema");
+const { getRfid, updateRfid } = require("../rfid/rfidController");
 
 // add a rfidTag
 exports.addRfidTag = async (req, res) => {
-  const rfidServiceUrl = process.env.RFID_SERVICE_URL;
-  if (!rfidServiceUrl)
-    throw new createError(404, `RFID_SERVICE_URL not set in env file`);
   if (!req.body.rfidTagId)
     throw new createError(404, `rfidTagId is a required field`);
   const rfidTagId = req.body.rfidTagId;
 
   //find rfid from rfid-service and check if it is valid
   try {
-    //TODO: need to change this code
-    let apiResponse = await axios.get(
-      `${rfidServiceUrl}/api/v1/rfid/${rfidTagId}`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-    let rfidTagResult = apiResponse.data;
+    req.params.id = rfidTagId;
+    let apiResponse = await getRfid(req, res, true);
+    let rfidTagResult = apiResponse;
     if (!rfidTagResult || rfidTagResult.status === false)
       throw new createError(404, `rfidTagId not found`);
-    //TODO: need to change this code
-    let updatetype = await axios.put(
-      `${rfidServiceUrl}/api/v1/rfid/${rfidTagId}`,
-      { status: "assigned" },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    const payload = { status: "assigned" };
+    req.body = payload;
+    let updatetype = await updateRfid(req, res, true);
     if (!updatetype || updatetype.status === false)
       throw new createError(404, `rfidTagType cant be updated`);
   } catch (error) {

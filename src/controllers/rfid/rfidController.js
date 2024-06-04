@@ -51,7 +51,7 @@ const getUnassignedRfids = async (req, res) => {
 };
 
 // get rfid by id
-const getRfid = async (req, res) => {
+const getRfid = async (req, res, internalCall = false) => {
   const { id } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -62,6 +62,7 @@ const getRfid = async (req, res) => {
   if (!rfid) {
     throw new createError(400, `Rfid with id ${id} not found`);
   }
+  if (internalCall) return rfid;
   res.status(200).json({ status: true, message: "OK", result: rfid });
 };
 
@@ -82,7 +83,7 @@ const getRfidBySerialNumber = async (req, res, internalCall = false) => {
 };
 
 // update rfid by id
-const updateRfid = async (req, res) => {
+const updateRfid = async (req, res, internalCall = false) => {
   const { id } = req.params;
   const data = req.body;
   if (data.expiry) {
@@ -98,6 +99,7 @@ const updateRfid = async (req, res) => {
   if (!rfid) {
     throw new createError(404, `Rfid with id ${id} not found`);
   }
+  if (internalCall) return rfid;
   res.status(200).json({ status: true, message: "OK", result: rfid });
 };
 
