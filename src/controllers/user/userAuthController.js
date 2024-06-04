@@ -7,6 +7,7 @@ const {
 const { sendSms } = require("../notification/smsController");
 const { generateOTP } = require("../../utils/generateOTP");
 const { getConfigByName } = require("../configuration/configurationController");
+const { getRfidBySerialNumber } = require("../rfid/rfidController");
 
 // sendOtp
 exports.sendOtp = async (req, res) => {
@@ -100,15 +101,11 @@ exports.login = async (req, res) => {
 };
 
 exports.rfidAuthenticate = async (req, res) => {
-  //TODO: need to change this code
-  const minimumWalletRequirement = await getConfigValue(
-    "minimum-transaction-wallet-requirement"
-  );
-
+  req.params.name = "minimum-transaction-wallet-requirement";
+  const minimumWalletRequirement = await getConfigByName(req, res, true);
   if (!req.params.rfid) throw new createError(400, "rfid is a required field");
-  const rfidSerialNumber = req.params.rfid;
-  //TODO: need to change this code
-  let rfidMongoId = await getRFIDMongoId(rfidSerialNumber);
+  req.params.rfidSerialNumber = req.params.rfid;
+  let rfidMongoId = await getRfidBySerialNumber(req, res, true);
   if (!rfidMongoId) throw new createError(400, "No Mongo Id");
 
   if (rfidMongoId.status !== "assigned")

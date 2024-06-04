@@ -66,7 +66,7 @@ const getRfid = async (req, res) => {
 };
 
 // get rfid by id
-const getRfidBySerialNumber = async (req, res) => {
+const getRfidBySerialNumber = async (req, res, internalCall = false) => {
   const serialNo = req.params.rfidSerialNumber;
 
   if (!serialNo) {
@@ -77,6 +77,7 @@ const getRfidBySerialNumber = async (req, res) => {
   if (!rfid) {
     throw new createError(400, `Rfid with serialNo ${serialNo} not found`);
   }
+  if (internalCall) return rfid;
   res.status(200).send({ status: true, rfid: rfid });
 };
 
