@@ -52,7 +52,7 @@ exports.dashboardEmail = async (req, res) => {
   }
 };
 
-exports.sendMailToAdmin = async (req, res) => {
+exports.sendMailToAdmin = async (req, res, internalCall = false) => {
   const { name, email, designation, password } = req.body;
 
   const subject = ` Welcome mail`;
@@ -65,6 +65,7 @@ exports.sendMailToAdmin = async (req, res) => {
 
   try {
     await sendEmail({ to: email, subject, text });
+    if (internalCall) return;
     res.status(201).json({ message: "Email sent successfully" });
   } catch (error) {
     console.error("Error sending email:", error);

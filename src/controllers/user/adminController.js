@@ -17,6 +17,7 @@ const {
   getVehicleDetailsPipeline,
   getRfidDetailsPipeline,
 } = require("./pipes");
+const { sendMailToAdmin } = require("../notification/emailController");
 
 exports.adminSignIn = async (req, res) => {
   const { email, password } = req.body;
@@ -210,8 +211,8 @@ exports.createAdmin = async (req, res) => {
     designation: designation,
     password: initialPassword,
   };
-  //TODO: need to change this code
-  await sendWelcomeMail(package);
+  req.body = package;
+  await sendMailToAdmin(req, res, true);
 
   const newAdmin = new Admin({
     name: name,
