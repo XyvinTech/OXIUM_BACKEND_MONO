@@ -6,6 +6,7 @@ const {
   getChargingStationListPipeline,
 } = require("./pipes");
 const { getUserByMobileNo } = require("../user/userBasicCRUDControllers");
+const { pushRole } = require("../user/adminController");
 const findCommonReturnData =
   "name address latitude longitude chargers status type image startTime stopTime amenities owner createdAt";
 
@@ -24,8 +25,10 @@ exports.createChargingStation = async (req, res) => {
   });
 
   const savedChargingStation = await chargingStation.save();
-  const upRole = await updateRole(req.role._id, savedChargingStation._id); //TODO: need to change this code
-  let token = await signAccessToken(req.userId, upRole.data, req.userId.email);
+  req.params.id = req.role._id;
+  req.body.location_access = savedChargingStation._id
+  const upRole = await pushRole(req, res, true);
+  let token = await signAccessToken(req.userId, upRole, req.userId.email);
   res.status(201).json({
     status: true,
     message: "Ok",
