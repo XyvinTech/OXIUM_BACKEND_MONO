@@ -58,16 +58,9 @@ exports.getChargingStationById = async (req, res) => {
       .json({ status: false, message: "mobileNo is a required field" });
 
   try {
-    //TODO: need to change this code
-    const userApiResponse = await axios.get(
-      `${userServiceUrl}/api/v1/users/user/byMobileNo/${userMobileNo}`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-    const userFavoriteStations = userApiResponse.data.result.favoriteStations;
+    req.params.mobileNo = userMobileNo;
+    const userApiResponse = await getUserByMobileNo(req, res, true);
+    const userFavoriteStations = userApiResponse.favoriteStations;
 
     const chargingStation = await ChargingStation.findById(chargingStationId);
     if (!chargingStation)
@@ -153,7 +146,6 @@ exports.getChargingStationById = async (req, res) => {
 
     res.status(200).json({ status: true, message: "Ok", result });
   } catch (error) {
-    axiosErrorHandler(error);
     res.status(500).json({
       status: false,
       message: "Internal Server Error",
@@ -416,4 +408,19 @@ exports.inbetweenPointsList = async (req, res) => {
   res
     .status(200)
     .json({ success: true, count: stations.length, data: stations });
+};
+
+const fetchConnectorsWithSoC = async (connectors, charger) => {
+  if (!connectors) return [];
+  return await Promise.all(
+    connectors.map(async (connector) => {
+      //TODO need to change this
+      let SOC = await getSoC(charger.name, connector.connectorId);
+      return {
+        ...connector,
+        status: connector.status || "Unknown",
+        currentSoc: String(SOC) || "0",
+      };
+    })
+  );
 };

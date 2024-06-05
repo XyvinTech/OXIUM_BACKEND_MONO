@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const getChargingStationPipeline = (chargingStationId) => [
-  { $match: { _id: mongoose.Types.ObjectId(chargingStationId) } },
+  { $match: { _id: new mongoose.Types.ObjectId(chargingStationId) } },
   {
     $lookup: {
       from: "evmachines",
@@ -212,7 +212,7 @@ const getChargingStationEvMachineListPipeline = () => [
 const getChargingStationByIdForDashboardPipeline = (id) => [
   {
     $match: {
-      _id: mongoose.Types.ObjectId(id),
+      _id: new mongoose.Types.ObjectId(id),
     },
   },
   {
@@ -352,7 +352,7 @@ const getChargingStationByIdForDashboardPipeline = (id) => [
 ];
 
 const getCPIDListByChargingStationPipeline = (id) => [
-  { $match: { _id: mongoose.Types.ObjectId(id) } },
+  { $match: { _id: new mongoose.Types.ObjectId(id) } },
   {
     $lookup: {
       from: "evmachines",
