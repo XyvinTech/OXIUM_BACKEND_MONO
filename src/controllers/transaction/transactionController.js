@@ -111,7 +111,7 @@ exports.getWalletTransactionById = async (req, res) => {
   }
 };
 
-exports.updateWalletTransaction = async (req, res) => {
+exports.updateWalletTransaction = async (req, res, internalCall = false) => {
   const updatedTransaction = await WalletTransaction.findOneAndUpdate(
     { transactionId: req.params.transactionId },
     { $set: req.body },
@@ -136,7 +136,7 @@ exports.updateWalletTransaction = async (req, res) => {
         );
       }
     }
-
+    if (internalCall) return updatedTransaction;
     res.status(200).json(updatedTransaction);
   }
 };

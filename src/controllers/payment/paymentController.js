@@ -4,6 +4,10 @@ const crypto = require("crypto");
 const { KHALTI_GATEWAY_URL, KHALTI_SECRET_KEY, KHALTI_RETURN_URL } =
   process.env;
 const { createRazorPaymentOrder } = require("../../helpers/razorpayService");
+const {
+  updateWalletTransaction,
+  createWalletTransaction,
+} = require("../transaction/transactionController");
 
 exports.createPaymentOrder = async (req, res) => {
   const { amount, currency, userId, type } = req.body;
@@ -29,14 +33,15 @@ exports.createPaymentOrder = async (req, res) => {
 
     order = await khaltiService(payload, config);
   }
-  //TODO: need to change this code
-  addWalletTransaction({
+  const payload = {
     user: userId,
     amount: amount,
     type: type || "wallet top-up",
     currency: currency,
     transactionId: order.id,
-  });
+  };
+  req.body = payload;
+  await createWalletTransaction(req, res, true);
 
   //create new transaction wallet
   res.status(200).json({ status: true, result: order });
@@ -52,12 +57,13 @@ exports.paymentVerify = async (req, res) => {
     .update(sign.toString())
     .digest("hex");
 
-  //TODO: need to change this code
-  await updateWalletTransaction(
-    razorpay_order_id,
-    razorpay_signature === expectedSign ? "success" : "failure",
-    razorpay_payment_id
-  );
+  const payload = {
+    status: razorpay_signature === expectedSign ? "success" : "failure",
+    paymentId: razorpay_payment_id,
+  };
+  req.body = payload;
+  req.params.transactionId = razorpay_order_id;
+  await updateWalletTransaction(req, res, true);
 
   //Aswin update transaction
   if (razorpay_signature !== expectedSign)
@@ -76,12 +82,13 @@ exports.khaltiVerify = async (req, res) => {
   };
 
   const paymentStatus = await khaltiCallback(req, config);
-  //TODO: need to change this code
-  // await updateWalletTransaction(
-  //   txnId,
+  // const payload = {
   //   status,
-  //   purchase_order_id
-  // )
+  //   paymentId: purchase_order_id,
+  // };
+  // req.body = payload;
+  // req.params.transactionId = txnId;
+  // await updateWalletTransaction(req, res, true);
 
   res.status(200).json({
     status: true,
