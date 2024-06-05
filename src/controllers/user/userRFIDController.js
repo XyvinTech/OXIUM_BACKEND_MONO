@@ -83,7 +83,7 @@ exports.removeRfidTag = async (req, res) => {
 };
 
 // remove a rfidTag
-exports.removeRfidTagById = async (req, res) => {
+exports.removeRfidTagById = async (req, res, internalCall = false) => {
   if (!req.params.rfidTagId)
     throw new createError(404, `rfidTagId is a required field`);
   const rfidTagId = req.params.rfidTagId;
@@ -94,7 +94,7 @@ exports.removeRfidTagById = async (req, res) => {
     },
     { $pull: { rfidTag: rfidTagId } }
   );
-
+  if (internalCall) return updatedUser.modifiedCount;
   res
     .status(200)
     .json(

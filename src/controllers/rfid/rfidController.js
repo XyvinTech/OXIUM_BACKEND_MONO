@@ -3,6 +3,7 @@ const Rfid = require("../../models/rfidTagSchema");
 const { getRfidsPipeline } = require("./pipes");
 const mongoose = require("mongoose");
 const createError = require("http-errors");
+const { removeRfidTagById } = require("../user/userRFIDController");
 
 const createRfid = async (req, res) => {
   let data = req.body;
@@ -111,18 +112,8 @@ const deleteRfid = async (req, res) => {
     throw new createError(400, `Invalid id ${id}`);
   }
 
-  //TODO: need to change this code
-
-  // code to check and delete rfid from user db
-  try {
-    await axios.put(`${userServiceUrl}/api/v1/users/removeRfidTagById/${id}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-  } catch (error) {
-    throw new createError(400, `no rfid with user`);
-  }
+  req.params.rfidTagId = id;
+  await removeRfidTagById(req, res, true);
 
   const rfid = await Rfid.findByIdAndDelete(id);
   if (!rfid) {
