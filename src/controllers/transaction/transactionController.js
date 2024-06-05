@@ -6,6 +6,7 @@ const {
   getTotalCountPipeline,
   getReportPipeline,
 } = require("./pipes");
+const { addToWallet } = require("../user/userController");
 
 exports.createWalletTransaction = async (req, res, internalCall = false) => {
   let body = req.body;
@@ -124,10 +125,12 @@ exports.updateWalletTransaction = async (req, res, internalCall = false) => {
       !updatedTransaction.userWalletUpdated &&
       updatedTransaction.status == "success"
     ) {
-      //TODO: Need to change this code
-      const userUpdated = await addToWallet(updatedTransaction.user, {
+      const payload = {
         amount: updatedTransaction.amount,
-      });
+      };
+      req.body = payload;
+      req.params.userId = updatedTransaction.user;
+      const userUpdated = await addToWallet(req, res, true);
       if (userUpdated) {
         await WalletTransaction.findOneAndUpdate(
           { transactionId: req.params.transactionId },

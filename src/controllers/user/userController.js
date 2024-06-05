@@ -60,7 +60,7 @@ exports.getChargingTariffByRfid = async (req, res) => {
 // add a favorite station
 
 // add money to wallet
-exports.addToWallet = async (req, res) => {
+exports.addToWallet = async (req, res, internalCall = false) => {
   if (!req.body.amount)
     throw new createError(404, `amount is a required field`);
   else if (isNaN(req.body.amount) || req.body.amount == 0)
@@ -81,10 +81,21 @@ exports.addToWallet = async (req, res) => {
     res.status(404).json({ status: false, message: "User not found" });
   } else {
     if (doneByAdmin) {
-      updateWalletTransaction(user, amount, reference, actionType);
+      const payload = {
+        user: user,
+        amount: amount,
+        type: actionType,
+        status: "success",
+        reference: reference,
+        initiated_by: "admin",
+        userWalletUpdated: true,
+      };
+      req.body = payload;
+      await createWalletTransaction(req, res, true);
     }
-
-    res.status(200).json({ status: true, message: "Ok", result: updatedUser });
+    const result = updatedUser;
+    if (internalCall) return result;
+    res.status(200).json({ status: true, message: "Ok", result });
   }
 };
 
