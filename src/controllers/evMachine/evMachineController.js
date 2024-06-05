@@ -2,6 +2,9 @@ const EvMachine = require("../../models/evMachineSchema");
 const createError = require("http-errors");
 const EvModel = require("../../models/evModelSchema");
 const createQRCode = require("../../helpers/qrCodeGen");
+const {
+  getChargingTariffById,
+} = require("../configuration/chargingTariffController");
 
 exports.createEvMachine = async (req, res) => {
   let evMachineData = req.body;
@@ -137,14 +140,6 @@ exports.deleteEvMachine = async (req, res) => {
 
 // Get a evMachine by CPID
 exports.getEvMachineTariffRate = async (req, res) => {
-  //TODO: need to change this code
-  const configurationServiceUrl = process.env.CONFIGURATION_SERVICE_URL;
-  if (!configurationServiceUrl)
-    return res.status(400).json({
-      status: false,
-      error: "CONFIGURATION_SERVICE_URL not set in env",
-    });
-
   const evMachine = await EvMachine.findOne(
     { CPID: req.params.evMachineCPID },
     "chargingTariff"
@@ -156,16 +151,9 @@ exports.getEvMachineTariffRate = async (req, res) => {
   const chargingTariff = evMachine.chargingTariff
     ? evMachine.chargingTariff
     : "default";
-  //TODO: need to change this code
-  let apiResponse = await axios.get(
-    `${configurationServiceUrl}/api/v1/chargingTariff/${chargingTariff}`,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
-  res.status(200).send({ status: true, result: apiResponse.data.result });
+  req.params.id = chargingTariff;
+  let apiResponse = await getChargingTariffById(req, res, true);
+  res.status(200).send({ status: true, result: apiResponse });
 };
 
 exports.deleteEvMachineByStationId = async (req, res) => {
