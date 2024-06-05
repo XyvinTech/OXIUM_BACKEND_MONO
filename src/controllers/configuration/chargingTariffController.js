@@ -74,9 +74,10 @@ exports.createDefaultChargingTariff = async (req, res) => {
 
 //get  Default Charging tariff
 
-exports.getDefaultChargingTariff = async (req, res) => {
+exports.getDefaultChargingTariff = async (req, res, internalCall = false) => {
   let result = await ChargingTariff.findOne({ name: "Default" });
-  res.status(200).json({ status: true, result: result });
+  if (internalCall) return result;
+  res.status(200).json({ status: true, result });
 };
 
 // get all chargingTariff with

@@ -4,6 +4,7 @@ const EvModel = require("../../models/evModelSchema");
 const createQRCode = require("../../helpers/qrCodeGen");
 const {
   getChargingTariffById,
+  getDefaultChargingTariff,
 } = require("../configuration/chargingTariffController");
 
 exports.createEvMachine = async (req, res) => {
@@ -16,22 +17,8 @@ exports.createEvMachine = async (req, res) => {
   if (!evModel) {
     throw new Error("EVModel not found");
   }
-  //TODO: need to change this code
-  const configurationServiceUrl = process.env.CONFIGURATION_SERVICE_URL;
-  if (!configurationServiceUrl)
-    return res.status(400).json({
-      status: false,
-      error: "CONFIGURATION_SERVICE_URL not set in env",
-    });
-
-  const defaultTariff = await axios.get(
-    `${configurationServiceUrl}/api/v1/chargingTariff/default`,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
+  
+  const defaultTariff = await getDefaultChargingTariff(req, res, true);
 
   const numberOfConnectors = evModel.no_of_ports;
   const connectors = [];
@@ -72,7 +59,7 @@ exports.createEvMachine = async (req, res) => {
 
   evMachineData.connectors = connectors;
   evMachineData.configuration_url = `wss://oxium.goecworld.com:5500/${evMachineData.CPID}`;
-  evMachineData.chargingTariff = defaultTariff.data.result._id;
+  evMachineData.chargingTariff = defaultTariff._id;
 
   const evMachine = new EvMachine(evMachineData);
   const savedEvMachine = await evMachine.save();
