@@ -63,16 +63,9 @@ exports.removeRfidTag = async (req, res) => {
     { $pull: { rfidTag: rfidTagId } },
     { new: true }
   );
-  //TODO: need to change this code
-  await axios.put(
-    `${rfidServiceUrl}/api/v1/rfid/${rfidTagId}`,
-    { status: "unassigned" },
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
+  req.body = { status: "unassigned" };
+  req.params.id = rfidTagId;
+  await updateRfid(req, res, true);
 
   //! whe unassigned make rfid unassigned
   if (!updatedUser) {
