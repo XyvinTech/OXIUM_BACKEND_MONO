@@ -1,5 +1,6 @@
 const createError = require("http-errors");
 const USER = require("../../models/userSchema");
+const { getVehiclesByIds } = require("../vehicle/vehicleController");
 
 // Get user's vehicles
 exports.getUserVehicles = async (req, res) => {
@@ -15,18 +16,9 @@ exports.getUserVehicles = async (req, res) => {
   );
   if (!user)
     return res.status(404).json({ status: false, message: "User not found" });
-  //TODO: need to change this code
-
-  let apiResponse = await axios.post(
-    `${vehicleServiceUrl}/api/v1/vehicle/getByIds`,
-    { idArray: user.vehicle.map((vehicle) => vehicle.vehicleRef) },
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
-  const vehiclesResult = apiResponse.data.result;
+  req.body.idArray = user.vehicle.map((vehicle) => vehicle.vehicleRef);
+  let apiResponse = await getVehiclesByIds(req, res, true);
+  const vehiclesResult = apiResponse;
   const userDefaultVehicle = user.defaultVehicle || null;
 
   let result = user.vehicle.map((vehicle) => {

@@ -165,7 +165,7 @@ const getVehicleById = async (req, res, internalCall = false) => {
   });
 };
 
-const getVehiclesByIds = async (req, res) => {
+const getVehiclesByIds = async (req, res, internalCall = false) => {
   const idArray = req.body.idArray;
   if (!idArray) throw new createError(400, "idArray is required field");
   if (!Array.isArray(idArray))
@@ -186,6 +186,8 @@ const getVehiclesByIds = async (req, res) => {
       brand: brandFound && brandFound.brandName,
     };
   });
+
+  if (internalCall) return result;
 
   res.status(200).json({
     status: true,
