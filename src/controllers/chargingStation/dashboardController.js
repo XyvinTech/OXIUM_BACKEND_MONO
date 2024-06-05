@@ -17,12 +17,16 @@ const {
   getChargingStationByIdForDashboardPipeline,
   getCPIDListByChargingStationPipeline,
 } = require("./pipes");
+const Role = require("../../models/rolesSchema");
 
 // Generate a unique identifier (UUID)
 const uniqueId = uuidv4();
 
 exports.getChargingStationListForDashboard = async (req, res) => {
-  const locations = req.role.location_access;
+  const { location_access } = await Role.findById(
+    req.role._id,
+    "location_access"
+  );
   const { pageNo, searchQuery } = req.query;
 
   const filter = {};
@@ -37,8 +41,8 @@ exports.getChargingStationListForDashboard = async (req, res) => {
     ];
   }
 
-  if (locations) {
-    filter._id = { $in: locations };
+  if (location_access) {
+    filter._id = { $in: location_access };
   }
 
   let list = await ChargingStation.find(filter)
@@ -52,12 +56,15 @@ exports.getChargingStationListForDashboard = async (req, res) => {
 };
 
 exports.getChargingStationListForDropdown = async (req, res) => {
-  const locations = req.role.location_access;
+  const { location_access } = await Role.findById(
+    req.role._id,
+    "location_access"
+  );
 
   const filter = {};
 
-  if (locations) {
-    filter._id = { $in: locations };
+  if (location_access) {
+    filter._id = { $in: location_access };
   }
 
   let list = await ChargingStation.find(filter).sort({ updatedAt: -1 });

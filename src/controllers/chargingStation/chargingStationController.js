@@ -7,6 +7,7 @@ const {
 } = require("./pipes");
 const { getUserByMobileNo } = require("../user/userBasicCRUDControllers");
 const { pushRole } = require("../user/adminController");
+const { getAverageRating } = require("../review/reviewController");
 const findCommonReturnData =
   "name address latitude longitude chargers status type image startTime stopTime amenities owner createdAt";
 
@@ -26,7 +27,7 @@ exports.createChargingStation = async (req, res) => {
 
   const savedChargingStation = await chargingStation.save();
   req.params.id = req.role._id;
-  req.body.location_access = savedChargingStation._id
+  req.body.location_access = savedChargingStation._id;
   const upRole = await pushRole(req, res, true);
   let token = await signAccessToken(req.userId, upRole, req.userId.email);
   res.status(201).json({
@@ -222,20 +223,21 @@ exports.getFavoriteChargingStationList = async (req, res) => {
     { _id: { $in: userFavoriteStations } },
     findCommonReturnData
   );
+  req.params.evMachine = "null";
   chargingStations = await Promise.all(
     chargingStations.map(async (chargingStation) => {
+      req.params.chargingStation = chargingStation._id;
       return {
         id: chargingStation._id,
         name: chargingStation.name,
         address: chargingStation.address,
-        rating: await getRating(chargingStation._id), // Now properly awaited
+        rating: await getAverageRating(req, res, true), // Now properly awaited
         image: chargingStation.image || "",
         latitude: chargingStation.latitude || null,
         longitude: chargingStation.longitude || null,
       };
     })
   );
-
   res
     .status(200)
     .json({ status: true, message: "Ok", result: chargingStations });
@@ -312,14 +314,15 @@ exports.getChargingStationUpdatedList = async (req, res) => {
           station.chargingStation.evMachines[0]?.evModelDetails[0];
 
         let station1 = station.chargingStation;
-
+        req.params.evMachine = "null";
+        req.params.chargingStation = station1._id;
         return {
           _id: station1._id,
           name: station1.name || "",
           address: station1.address || "",
           latitude: station1.latitude || null,
           longitude: station1.longitude || null,
-          rating: await getRating(station1._id),
+          rating: await getAverageRating(req, res, true),
           isBusy: hasBusyConnector ? true : false,
           image: station1.image || "",
           amenities: station1.amenities,

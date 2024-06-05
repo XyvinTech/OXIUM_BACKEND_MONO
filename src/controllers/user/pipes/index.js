@@ -35,7 +35,7 @@ const getUserListPipeline = (filter) => [
 ];
 
 const getUserDataByIdPipeline = (id) => [
-  { $match: { _id: mongoose.Types.ObjectId(id) } },
+  { $match: { _id: new mongoose.Types.ObjectId(id) } },
   {
     $lookup: {
       from: "ocpptransactions",
@@ -99,7 +99,7 @@ const getUserDataByPhoneOrEmailPipeline = (query) => [
 ];
 
 const getFavoriteStationsPipeline = (id, pageNo) => [
-  { $match: { _id: mongoose.Types.ObjectId(id) } },
+  { $match: { _id: new mongoose.Types.ObjectId(id) } },
   { $unwind: "$favoriteStations" },
   {
     $lookup: {
@@ -124,7 +124,7 @@ const getFavoriteStationsPipeline = (id, pageNo) => [
 ];
 
 const getChargingTariffPipeline = (id) => [
-  { $match: { _id: mongoose.Types.ObjectId(id) } },
+  { $match: { _id: new mongoose.Types.ObjectId(id) } },
   {
     $lookup: {
       from: "chargingtariffs",
@@ -175,7 +175,7 @@ const getChargingTariffPipeline = (id) => [
 ];
 
 const getVehicleDetailsPipeline = (id) => [
-  { $match: { _id: mongoose.Types.ObjectId(id) } },
+  { $match: { _id: new mongoose.Types.ObjectId(id) } },
   {
     $unwind: {
       path: "$vehicle",
@@ -224,7 +224,7 @@ const getVehicleDetailsPipeline = (id) => [
 ];
 
 const getRfidDetailsPipeline = (id, pageNo) => [
-  { $match: { _id: mongoose.Types.ObjectId(id) } },
+  { $match: { _id: new mongoose.Types.ObjectId(id) } },
   {
     $unwind: {
       path: "$rfidTag",

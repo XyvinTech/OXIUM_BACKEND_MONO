@@ -341,6 +341,7 @@ exports.userDataById = async (req, res) => {
 
 exports.userDatabyPhoneOrEmail = async (req, res) => {
   const { email, phoneNumber } = req.query;
+  console.log("🚀 ~ exports.userDatabyPhoneOrEmail= ~ phoneNumber:", phoneNumber)
 
   if (!email && !phoneNumber) {
     return res
@@ -384,7 +385,7 @@ exports.favoriteStations = async (req, res) => {
       getFavoriteStationsPipeline(id, pageNo)
     );
     const totalCount = await User.find({
-      _id: mongoose.Types.ObjectId(id),
+      _id: new mongoose.Types.ObjectId(id),
     }).countDocuments();
 
     if (!pipedData.length) {
@@ -453,7 +454,7 @@ exports.rfidDetails = async (req, res) => {
     const result = await User.aggregate(getRfidDetailsPipeline(id, pageNo));
 
     const totalCount = await User.find({
-      _id: mongoose.Types.ObjectId(id),
+      _id: new mongoose.Types.ObjectId(id),
     }).countDocuments();
 
     const final = result.map((item) => ({

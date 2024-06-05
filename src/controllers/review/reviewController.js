@@ -58,8 +58,8 @@ exports.filteredReviews = async (req, res) => {
 
   let filter = {};
   if (chargingStation)
-    filter.chargingStation = mongoose.Types.ObjectId(chargingStation);
-  if (user) filter.user = mongoose.Types.ObjectId(user);
+    filter.chargingStation = new mongoose.Types.ObjectId(chargingStation);
+  if (user) filter.user = new mongoose.Types.ObjectId(user);
 
   const aggregatedData = await Review.aggregate(
     getFilteredReviewsPipeline(filter)
@@ -195,7 +195,7 @@ exports.getReviewByChargingStation = async (req, res) => {
   });
 };
 
-exports.getAverageRating = async (req, res) => {
+exports.getAverageRating = async (req, res, internalCall = false) => {
   const { chargingStation, evMachine } = req.params;
   let selectorBody = {};
   if (chargingStation) selectorBody.chargingStation = chargingStation;
@@ -209,5 +209,7 @@ exports.getAverageRating = async (req, res) => {
     return accumulator + currentObject.rating;
   }, 0);
   const averageRating = review.length ? sumOfRating / review.length : 0;
-  res.status(200).json({ status: true, result: averageRating, message: "Ok" });
+  const result = averageRating;
+  if (internalCall) return result;
+  res.status(200).json({ status: true, result, message: "Ok" });
 };

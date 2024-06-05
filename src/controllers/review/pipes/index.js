@@ -38,7 +38,7 @@ const getFilteredReviewsPipeline = (filter) => [
 ];
 
 const getReviewByChargingStationPipeline = (chargingStationId) => [
-  { $match: { chargingStation: mongoose.Types.ObjectId(chargingStationId) } },
+  { $match: { chargingStation: new mongoose.Types.ObjectId(chargingStationId) } },
   {
     $lookup: {
       from: "users",

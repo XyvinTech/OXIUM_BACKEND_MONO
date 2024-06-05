@@ -59,7 +59,7 @@ app.use(`${BASE_PATH}`, authVerify, evRoute);
 app.use(`${BASE_PATH}`, authVerify, paymentRoute);
 app.use(`${BASE_PATH}`, authVerify, configRoute);
 app.use(`${BASE_PATH}`, authVerify, logRoute);
-app.use(`${BASE_PATH}`, adminRoute);
+app.use(`${BASE_PATH}/admin`, adminRoute);
 app.use(`${BASE_PATH}`, userRoute);
 
 // 404

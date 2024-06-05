@@ -4,7 +4,7 @@ const Vehicle = require("../../models/vehicleSchema");
 const { vehicleValidationSchema } = require("../../validation");
 
 const AWS = require("aws-sdk");
-const { getVehiclePipeline } = require("./pipes");
+const { getVehiclePipeline, getBrandPipeline } = require("./pipes");
 AWS.config.update({
   region: process.env.MY_AWS_REGION,
   accessKeyId: process.env.MY_AWS_ACCESS_KEY,

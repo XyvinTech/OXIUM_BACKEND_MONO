@@ -208,7 +208,7 @@ const getTariffPipeline = (cpid) => [
 ];
 
 const getDashboardListByIdPipeline = (id) => [
-  { $match: { _id: mongoose.Types.ObjectId(id) } },
+  { $match: { _id: new mongoose.Types.ObjectId(id) } },
   {
     $lookup: {
       from: "chargingstations",

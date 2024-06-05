@@ -14,4 +14,12 @@ const getVehiclePipeline = (filter) => [
   },
 ];
 
-module.exports = { getVehiclePipeline };
+const getBrandPipeline = (brandIds) => [
+  {
+    $match: {
+      _id: { $in: brandIds },
+    },
+  },
+];
+
+module.exports = { getVehiclePipeline, getBrandPipeline };

@@ -8,11 +8,14 @@ const {
   getReport2Pipeline,
   getReportPipeline,
 } = require("./pipes");
+const Role = require("../../models/rolesSchema");
 
 exports.getDashboardList = async (req, res) => {
-  const locations = req.role.location_access.map((id) =>
-    mongoose.Types.ObjectId(id)
+  const { location_access } = await Role.findById(
+    req.role._id,
+    "location_access"
   );
+  const locations = location_access.map((id) => new mongoose.Types.ObjectId(id));
   const { pageNo, searchQuery } = req.query;
 
   const filter = {};
