@@ -98,7 +98,7 @@ exports.updateUserByMobileNo = async (req, res) => {
   }
 };
 
-exports.getUserByMobileNo = async (req, res) => {
+exports.getUserByMobileNo = async (req, res, internalCall = false) => {
   try {
     const user = await USER.findOne({ mobile: req.params.mobileNo });
     if (!user)
@@ -132,8 +132,9 @@ exports.getUserByMobileNo = async (req, res) => {
     } else {
       userData.defaultVehicle = null;
     }
-
-    res.status(200).json({ status: true, message: "Ok", result: userData });
+    const result = userData
+    if(internalCall) return result;
+    res.status(200).json({ status: true, message: "Ok", result });
   } catch (error) {
     res.status(500).json({ status: false, message: error.message });
   }

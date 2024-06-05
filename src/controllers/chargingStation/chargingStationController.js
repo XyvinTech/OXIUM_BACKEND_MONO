@@ -5,6 +5,7 @@ const {
   getChargingStationPipeline,
   getChargingStationListPipeline,
 } = require("./pipes");
+const { getUserByMobileNo } = require("../user/userBasicCRUDControllers");
 const findCommonReturnData =
   "name address latitude longitude chargers status type image startTime stopTime amenities owner createdAt";
 
@@ -212,9 +213,6 @@ exports.deleteChargingStation = async (req, res) => {
 
 // Get a chargingStation list
 exports.getFavoriteChargingStationList = async (req, res) => {
-  let userServiceUrl = process.env.USER_URL;
-  if (!userServiceUrl) userServiceUrl = staticUserGlobalUrl;
-
   const userMobileNo = req.body.mobileNo;
   if (!userMobileNo)
     return res.status(400).json({
@@ -222,17 +220,9 @@ exports.getFavoriteChargingStationList = async (req, res) => {
       status: false,
       message: "mobileNo is a required field",
     });
-  //TODO: need to change this code
-  let apiResponse = await axios.get(
-    `${userServiceUrl}/api/v1/users/user/byMobileNo/${userMobileNo}`,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
-
-  const userFavoriteStations = apiResponse.data.result.favoriteStations;
+  req.params.mobileNo = userMobileNo;
+  let apiResponse = await getUserByMobileNo(req, res, true);
+  const userFavoriteStations = apiResponse.favoriteStations;
   let chargingStations = await ChargingStation.find(
     { _id: { $in: userFavoriteStations } },
     findCommonReturnData
