@@ -8,6 +8,7 @@ const {
 const { getUserByMobileNo } = require("../user/userBasicCRUDControllers");
 const { pushRole } = require("../user/adminController");
 const { getAverageRating } = require("../review/reviewController");
+const { getSoC } = require("../../services/ocppServiceApis");
 const findCommonReturnData =
   "name address latitude longitude chargers status type image startTime stopTime amenities owner createdAt";
 
@@ -420,7 +421,6 @@ const fetchConnectorsWithSoC = async (connectors, charger) => {
   if (!connectors) return [];
   return await Promise.all(
     connectors.map(async (connector) => {
-      //TODO need to change this
       let SOC = await getSoC(charger.name, connector.connectorId);
       return {
         ...connector,

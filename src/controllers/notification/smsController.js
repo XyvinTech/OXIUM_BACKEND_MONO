@@ -16,6 +16,6 @@ exports.sendSms = async (req, res, internalCall = false) => {
   } else {
     result = await sendTwilioOTP(phoneNumber, otp);
   }
-  if (internalCall) return;
+  if (internalCall === true) return;
   res.status(200).json({ status: true, message: "OTP sent successfully" });
 };

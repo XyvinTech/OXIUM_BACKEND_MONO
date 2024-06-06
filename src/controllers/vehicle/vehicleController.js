@@ -158,7 +158,7 @@ const getVehicleById = async (req, res, internalCall = false) => {
     brand: brand ? brand.brandName : "",
   };
 
-  if (internalCall) return result;
+    if (internalCall === true) return result;
   res.status(200).json({
     status: true,
     result: result,
@@ -187,7 +187,7 @@ const getVehiclesByIds = async (req, res, internalCall = false) => {
     };
   });
 
-  if (internalCall) return result;
+    if (internalCall === true) return result;
 
   res.status(200).json({
     status: true,

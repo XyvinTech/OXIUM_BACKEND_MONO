@@ -16,7 +16,7 @@ exports.createWalletTransaction = async (req, res, internalCall = false) => {
 
   const walletTransaction = new WalletTransaction(req.body);
   const savedTransaction = await walletTransaction.save();
-  if (internalCall) return savedTransaction;
+  if (internalCall === true) return savedTransaction;
   res.status(201).json(savedTransaction);
 };
 
@@ -139,7 +139,7 @@ exports.updateWalletTransaction = async (req, res, internalCall = false) => {
         );
       }
     }
-    if (internalCall) return updatedTransaction;
+    if (internalCall === true) return updatedTransaction;
     res.status(200).json(updatedTransaction);
   }
 };

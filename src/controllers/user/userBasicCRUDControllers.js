@@ -132,8 +132,8 @@ exports.getUserByMobileNo = async (req, res, internalCall = false) => {
     } else {
       userData.defaultVehicle = null;
     }
-    const result = userData
-    if(internalCall) return result;
+    const result = userData;
+    if (internalCall === true) return result;
     res.status(200).json({ status: true, message: "Ok", result });
   } catch (error) {
     res.status(500).json({ status: false, message: error.message });

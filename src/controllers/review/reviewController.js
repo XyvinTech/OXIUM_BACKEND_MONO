@@ -210,6 +210,6 @@ exports.getAverageRating = async (req, res, internalCall = false) => {
   }, 0);
   const averageRating = review.length ? sumOfRating / review.length : 0;
   const result = averageRating;
-  if (internalCall) return result;
+    if (internalCall === true) return result;
   res.status(200).json({ status: true, result, message: "Ok" });
 };

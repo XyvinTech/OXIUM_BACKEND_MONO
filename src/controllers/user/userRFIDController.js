@@ -87,7 +87,7 @@ exports.removeRfidTagById = async (req, res, internalCall = false) => {
     },
     { $pull: { rfidTag: rfidTagId } }
   );
-  if (internalCall) return updatedUser.modifiedCount;
+  if (internalCall === true) return updatedUser.modifiedCount;
   res
     .status(200)
     .json(

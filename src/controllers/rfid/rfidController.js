@@ -63,7 +63,7 @@ const getRfid = async (req, res, internalCall = false) => {
   if (!rfid) {
     throw new createError(400, `Rfid with id ${id} not found`);
   }
-  if (internalCall) return rfid;
+  if (internalCall === true) return rfid;
   res.status(200).json({ status: true, message: "OK", result: rfid });
 };
 
@@ -79,7 +79,7 @@ const getRfidBySerialNumber = async (req, res, internalCall = false) => {
   if (!rfid) {
     throw new createError(400, `Rfid with serialNo ${serialNo} not found`);
   }
-  if (internalCall) return rfid;
+  if (internalCall === true) return rfid;
   res.status(200).send({ status: true, rfid: rfid });
 };
 
@@ -100,7 +100,7 @@ const updateRfid = async (req, res, internalCall = false) => {
   if (!rfid) {
     throw new createError(404, `Rfid with id ${id} not found`);
   }
-  if (internalCall) return rfid;
+  if (internalCall === true) return rfid;
   res.status(200).json({ status: true, message: "OK", result: rfid });
 };
 

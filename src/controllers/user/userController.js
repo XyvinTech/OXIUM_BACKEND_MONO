@@ -94,7 +94,7 @@ exports.addToWallet = async (req, res, internalCall = false) => {
       await createWalletTransaction(req, res, true);
     }
     const result = updatedUser;
-    if (internalCall) return result;
+      if (internalCall === true) return result;
     res.status(200).json({ status: true, message: "Ok", result });
   }
 };

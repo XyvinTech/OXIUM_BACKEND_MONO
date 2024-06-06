@@ -65,7 +65,7 @@ exports.sendMailToAdmin = async (req, res, internalCall = false) => {
 
   try {
     await sendEmail({ to: email, subject, text });
-    if (internalCall) return;
+    if (internalCall === true) return;
     res.status(201).json({ message: "Email sent successfully" });
   } catch (error) {
     console.error("Error sending email:", error);

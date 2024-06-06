@@ -29,7 +29,7 @@ exports.getConfigByName = async (req, res, internalCall = false) => {
 
   if (config) {
     const result = config.value
-    if (internalCall) return result;
+      if (internalCall === true) return result;
     res.status(200).json({ status: true, result, message: "Ok" });
   } else {
     res.status(404).json({ status: false, message: "Config not found" });

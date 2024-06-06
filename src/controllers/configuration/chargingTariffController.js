@@ -76,7 +76,7 @@ exports.createDefaultChargingTariff = async (req, res) => {
 
 exports.getDefaultChargingTariff = async (req, res, internalCall = false) => {
   let result = await ChargingTariff.findOne({ name: "Default" });
-  if (internalCall) return result;
+    if (internalCall === true) return result;
   res.status(200).json({ status: true, result });
 };
 
@@ -150,7 +150,7 @@ exports.getChargingTariffById = async (req, res, internalCall = false) => {
   total += total * taxPercentage;
 
   const result = { tax: taxPercentage, total: Number(total.toFixed(2)) };
-  if (internalCall) return result;
+    if (internalCall === true) return result;
 
   res.status(200).json({
     status: true,

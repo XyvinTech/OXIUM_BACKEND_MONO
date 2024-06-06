@@ -129,7 +129,7 @@ exports.pushRole = async (req, res, internalCall = false) => {
       { new: true }
     );
     const data = updatedRole;
-    if (internalCall) return data;
+    if (internalCall === true) return data;
     res.status(200).json({ success: true, data });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -302,13 +302,9 @@ exports.userList = async (req, res) => {
 
     const totalCount = await User.find(filter).countDocuments();
 
-    if (!pipedData.length) {
-      res.status(404).json({ status: false, message: "User not found" });
-    } else {
-      res
-        .status(200)
-        .json({ status: true, message: "Ok", result: pipedData, totalCount });
-    }
+    res
+      .status(200)
+      .json({ status: true, message: "Ok", result: pipedData, totalCount });
   } catch (error) {
     res.status(500).json({
       status: false,
@@ -341,7 +337,10 @@ exports.userDataById = async (req, res) => {
 
 exports.userDatabyPhoneOrEmail = async (req, res) => {
   const { email, phoneNumber } = req.query;
-  console.log("🚀 ~ exports.userDatabyPhoneOrEmail= ~ phoneNumber:", phoneNumber)
+  console.log(
+    "🚀 ~ exports.userDatabyPhoneOrEmail= ~ phoneNumber:",
+    phoneNumber
+  );
 
   if (!email && !phoneNumber) {
     return res
@@ -388,13 +387,9 @@ exports.favoriteStations = async (req, res) => {
       _id: new mongoose.Types.ObjectId(id),
     }).countDocuments();
 
-    if (!pipedData.length) {
-      res.status(404).json({ status: false, message: "User not found" });
-    } else {
-      res
-        .status(200)
-        .json({ status: true, message: "Ok", result: pipedData, totalCount });
-    }
+    res
+      .status(200)
+      .json({ status: true, message: "Ok", result: pipedData, totalCount });
   } catch (error) {
     res.status(500).json({
       status: false,
