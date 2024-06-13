@@ -9,6 +9,7 @@ const initializeApp = async () => {
   if (process.env.NODE_ENV === 'production') {
     try {
       const envPath = await loadSecrets();
+      
       dotenv.config({ path: envPath });
     } catch (err) {
       console.error('Failed to load secrets:', err);
