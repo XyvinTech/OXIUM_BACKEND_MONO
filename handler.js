@@ -11,7 +11,7 @@ if (process.env.NODE_ENV === 'production') {
       // Connect to MongoDB.
       connectDB()
         .then(() => {
-          // Database connected,
+          // Database connected
           app.listen(PORT, () => {
             console.log(`Server is running on port ${PORT}`)
           })
