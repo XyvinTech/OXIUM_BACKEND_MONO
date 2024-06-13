@@ -8,7 +8,7 @@ if (process.env.NODE_ENV === 'production') {
       const connectDB = require('./src/db')
       const PORT = process.env.PORT || 5050
 
-      // Connect to MongoDB
+      // Connect to MongoDB.
       connectDB()
         .then(() => {
           // Database connected,
