@@ -3,7 +3,6 @@ const Rfid = require("../../models/rfidTagSchema");
 const { getRfidsPipeline } = require("./pipes");
 const mongoose = require("mongoose");
 const createError = require("http-errors");
-const { removeRfidTagById } = require("../user/userRFIDController");
 
 const createRfid = async (req, res) => {
   let data = req.body;
@@ -113,6 +112,8 @@ const deleteRfid = async (req, res) => {
   }
 
   req.params.rfidTagId = id;
+  const { removeRfidTagById } = require("../user/userRFIDController"); //!Lazy loading to avoid circular issue
+
   await removeRfidTagById(req, res, true);
 
   const rfid = await Rfid.findByIdAndDelete(id);

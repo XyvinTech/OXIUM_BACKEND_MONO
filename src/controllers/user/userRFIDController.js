@@ -45,7 +45,7 @@ exports.addRfidTag = async (req, res) => {
 
 // remove a rfidTag
 exports.removeRfidTag = async (req, res) => {
-  const rfidServiceUrl = process.env.RFID_SERVICE_URL;
+  
 
   if (!req.body.rfidTagId)
     throw new createError(404, `rfidTagId is a required field`);

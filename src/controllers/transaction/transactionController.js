@@ -6,7 +6,6 @@ const {
   getTotalCountPipeline,
   getReportPipeline,
 } = require("./pipes");
-const { addToWallet } = require("../user/userController");
 
 exports.createWalletTransaction = async (req, res, internalCall = false) => {
   let body = req.body;
@@ -130,6 +129,8 @@ exports.updateWalletTransaction = async (req, res, internalCall = false) => {
       };
       req.body = payload;
       req.params.userId = updatedTransaction.user;
+      const { addToWallet } = require("../user/userController"); //! lazyloading to avoid circular dependency issue
+
       const userUpdated = await addToWallet(req, res, true);
       if (userUpdated) {
         await WalletTransaction.findOneAndUpdate(

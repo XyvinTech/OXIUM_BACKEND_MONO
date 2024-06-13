@@ -1,15 +1,14 @@
 const winston = require('winston')
 const { createLogger, format, transports } = winston
 const { combine, timestamp, label,  prettyPrint } = format
-const mongoose = require('mongoose');
 require('winston-mongodb')
 
 
-const dbName = process.env.DB_NAME || 'OXIUM_DB'
+
 const CATEGORY = 'OXIUM service'
 
 let options = {
-  db: mongoose.connection.useDb(dbName),
+  db: process.env.MONGODB_URI || 'mongodb://localhost:27017/OXIUM_DB',
   options: {
     useNewUrlParser: true,
     useUnifiedTopology: true,
