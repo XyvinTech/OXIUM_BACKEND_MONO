@@ -1,6 +1,6 @@
 const AWS = require('aws-sdk')
 
-const secretName = 'ocpp/ecs'
+const secretName = 'prod/new-ocpp'
 const client = new AWS.SecretsManager({ region: 'ap-south-1' })
 
 const loadSecrets = async () => {
