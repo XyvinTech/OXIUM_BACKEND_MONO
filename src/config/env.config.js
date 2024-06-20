@@ -12,6 +12,7 @@ const loadSecrets = async () => {
 
       for (const [key, value] of Object.entries(secrets)) {
         process.env[key] = value
+        
       }
     } else {
       console.log('Secrets not found.')

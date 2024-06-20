@@ -8,6 +8,7 @@ const reset = "\x1b[0m";
 const initializeApp = async () => {
   if (process.env.NODE_ENV === 'production') {
     try {
+      console.log(`${green}Initializing`)
       const envPath = await loadSecrets();
       
       dotenv.config({ path: envPath });

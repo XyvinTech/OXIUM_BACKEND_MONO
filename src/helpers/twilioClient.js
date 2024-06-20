@@ -3,7 +3,7 @@ const accountSid = process.env.TWILIO_ACCOUNT_SID
 const authToken = process.env.TWILIO_AUTH_TOKEN
 const serviceSid = process.env.TWILIO_SERVICE_SID
 const client = require('twilio')(accountSid, authToken)
-
+console.log('sadsadas', accountSid, authToken, serviceSid)
 const sendTwilioOTP = async (phoneNumber, otp) => {
   const sendOTP = await client.verify.v2
     .services(serviceSid)
