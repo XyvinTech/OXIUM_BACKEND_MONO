@@ -8,7 +8,7 @@ require('winston-mongodb')
 const CATEGORY = 'OXIUM service'
 
 let options = {
-  db: process.env.MONGODB_URI || 'mongodb://localhost:27017/OXIUM_DB',
+  db: process.env.MONGO_URI || 'mongodb://localhost:27017/OXIUM_DB',
   options: {
     useNewUrlParser: true,
     useUnifiedTopology: true,
