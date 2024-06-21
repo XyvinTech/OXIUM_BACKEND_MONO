@@ -2,7 +2,7 @@ const winston = require('winston')
 const { createLogger, format, transports } = winston
 const { combine, timestamp, label,  prettyPrint } = format
 require('winston-mongodb')
-
+require("dotenv").config();
 
 
 const CATEGORY = 'OXIUM service'
