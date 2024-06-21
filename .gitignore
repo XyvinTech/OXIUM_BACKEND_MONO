@@ -13,6 +13,7 @@ pids/
 *.pid
 *.seed
 *.pid.lock
+*.bat
 
 # Optional npm cache directory
 .npm
