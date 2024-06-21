@@ -21,7 +21,6 @@ const adminRoute = require("./routes/user/adminRoutes.js");
 const userRoute = require("./routes/user/userRoutes.js");
 const app = express();
 
-console.log(process.env.CORS_ORIGIN)
 app.use(
   cors({
     origin: process.env.CORS_ORIGIN,

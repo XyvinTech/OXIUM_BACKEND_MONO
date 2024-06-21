@@ -4,9 +4,10 @@ const generateToken = require("../utils/generateToken");
 
 const staticGlobalUrl = "http://localhost:6500";
 
-const token = generateToken(process.env.AUTH_SECRET);
+
 
 exports.getSoC = async (cpid, connectorId) => {
+  const token = await generateToken(process.env.AUTH_SECRET);
   try {
     let ocppServiceUrl = process.env.OCPP_SERVICE_URL;
     if (!ocppServiceUrl) ocppServiceUrl = staticGlobalUrl;
