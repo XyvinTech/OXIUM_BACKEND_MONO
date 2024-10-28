@@ -1,5 +1,4 @@
-// @ts-ignore
-require("dotenv").config();
+require("dotenv");
 const USER = require("../../models/userSchema");
 const AWS = require("aws-sdk");
 const { getUserByMobilePipeline } = require("./pipes");
@@ -156,7 +155,7 @@ exports.imageUpload = async (req, res) => {
 
   // Create a stream to S3
   const params = {
-    Bucket: "image-upload-oxium/users",
+    Bucket: "oxium",
     Key: file.originalname,
     ContentType: file.mimetype,
     Body: file.buffer,
