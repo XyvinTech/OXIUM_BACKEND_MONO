@@ -48,6 +48,8 @@ app.get(BASE_PATH, (req, res) =>
   res.status(200).send(" All endpoints are 🔐. Do you have the 🔑")
 );
 
+app.use(`${BASE_PATH}/admin`, adminRoute);
+app.use(`${BASE_PATH}`, userRoute);
 app.use(`${BASE_PATH}`, authVerify, vehicleRoute);
 app.use(`${BASE_PATH}`, authVerify, brandRoute);
 app.use(`${BASE_PATH}`, authVerify, transactionRoute);
@@ -59,8 +61,7 @@ app.use(`${BASE_PATH}`, authVerify, evRoute);
 app.use(`${BASE_PATH}`, authVerify, paymentRoute);
 app.use(`${BASE_PATH}`, authVerify, configRoute);
 app.use(`${BASE_PATH}`, authVerify, logRoute);
-app.use(`${BASE_PATH}/admin`, adminRoute);
-app.use(`${BASE_PATH}`, userRoute);
+
 
 // 404
 app.all("*", (req, res, next) => {
