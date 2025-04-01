@@ -4,6 +4,7 @@ const cors = require("cors");
 const logger = require("morgan");
 const cookieParser = require("cookie-parser");
 const volleyball = require("volleyball");
+const createError = require("http-errors");
 const errorHandler = require("./middlewares/errorMiddleware.js");
 const vehicleRoute = require("./routes/vehicle/vehicleRoutes.js");
 const authVerify = require("./middlewares/authVerify.js");
